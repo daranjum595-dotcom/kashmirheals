@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kashmir Heals — A Community for Healing & Connection</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #F5F0EB;
+      --text:      #2C2C2C;
+      --text-soft: #6B6560;
+      --accent:    #8A9E85;
+      --accent2:   #C49A8A;
+      --border:    rgba(44,44,44,.10);
+      --serif:     'Cormorant Garamond', Georgia, serif;
+      --sans:      'DM Sans', system-ui, sans-serif;
+      --radius:    12px;
+    }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ─── CHINAR BACKGROUND MOTIF ─── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600' viewBox='0 0 600 600'%3E%3Cg opacity='0.035' fill='%232C2C2C'%3E%3Cpath d='M300 60 C310 120 370 150 370 210 C370 270 310 290 300 340 C290 290 230 270 230 210 C230 150 290 120 300 60Z'/%3E%3Cpath d='M300 60 C340 80 400 70 420 120 C440 170 400 210 380 240 C360 270 340 260 300 340 C310 270 350 250 350 210 C350 170 320 140 300 60Z'/%3E%3Cpath d='M300 60 C260 80 200 70 180 120 C160 170 200 210 220 240 C240 270 260 260 300 340 C290 270 250 250 250 210 C250 170 280 140 300 60Z'/%3E%3Ccircle cx='300' cy='350' r='12'/%3E%3Cline x1='300' y1='362' x2='300' y2='460' stroke='%232C2C2C' stroke-width='3'/%3E%3C/g%3E%3C/svg%3E");
+      background-size: 520px 520px;
+      background-position: right -60px top -60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ─── NAVBAR ─── */
+    #navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 5%;
+      transition: background .35s ease, box-shadow .35s ease;
+    }
+    #navbar.scrolled {
+      background: rgba(245,240,235,.94);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 1px 0 var(--border);
+    }
+    .nav-logo {
+      font-family: var(--serif);
+      font-size: 1.35rem;
+      font-weight: 500;
+      letter-spacing: .02em;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--accent); }
+    nav { display: flex; gap: 2.2rem; align-items: center; }
+    nav a {
+      font-size: .875rem;
+      font-weight: 400;
+      letter-spacing: .04em;
+      color: var(--text-soft);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color .2s;
+    }
+    nav a:hover { color: var(--text); }
+    .nav-cta {
+      background: var(--accent);
+      color: #fff !important;
+      padding: .45rem 1.1rem;
+      border-radius: 50px;
+      font-size: .8rem !important;
+      letter-spacing: .06em !important;
+    }
+    .nav-cta:hover { background: #7a8e75 !important; }
+
+    /* hamburger */
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; border: none; background: none; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: .3s; }
+    .mobile-menu {
+      display: none; position: fixed; inset: 0; background: var(--bg);
+      z-index: 99; flex-direction: column; align-items: center; justify-content: center; gap: 2.5rem;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-family: var(--serif); font-size: 2rem; font-weight: 400;
+      color: var(--text); text-decoration: none; letter-spacing: .02em;
+    }
+    .mobile-menu-close {
+      position: absolute; top: 1.5rem; right: 5%;
+      font-size: 1.8rem; cursor: pointer; background: none; border: none; color: var(--text);
+    }
+
+    /* ─── SECTIONS SHARED ─── */
+    section { position: relative; z-index: 1; }
+
+    .section-label {
+      display: inline-block;
+      font-size: .72rem;
+      font-weight: 500;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    /* ─── HERO ─── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 0 5%;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 70% 50%, rgba(138,158,133,.18) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 50% at 20% 80%, rgba(196,154,138,.15) 0%, transparent 60%);
+      z-index: 0;
+    }
+    /* abstract circle shape */
+    .hero-shape {
+      position: absolute;
+      right: 6%;
+      top: 50%;
+      transform: translateY(-50%);
+      width: min(420px, 44vw);
+      height: min(420px, 44vw);
+      border-radius: 50%;
+      border: 1px solid rgba(138,158,133,.25);
+      z-index: 0;
+    }
+    .hero-shape::before {
+      content:'';
+      position: absolute;
+      inset: 20px;
+      border-radius: 50%;
+      border: 1px solid rgba(196,154,138,.20);
+    }
+    .hero-shape::after {
+      content:'';
+      position: absolute;
+      inset: 48px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(138,158,133,.12) 0%, transparent 80%);
+    }
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 620px;
+    }
+    .hero-content h1 {
+      font-family: var(--serif);
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-weight: 400;
+      line-height: 1.1;
+      letter-spacing: -.01em;
+      margin-bottom: 1.4rem;
+    }
+    .hero-content h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+    .hero-content p {
+      font-size: 1.05rem;
+      color: var(--text-soft);
+      max-width: 460px;
+      margin-bottom: 2.4rem;
+      line-height: 1.75;
+    }
+    .btn-primary {
+      display: inline-block;
+      background: var(--text);
+      color: var(--bg);
+      font-family: var(--sans);
+      font-size: .85rem;
+      font-weight: 400;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: .85rem 2.2rem;
+      border-radius: 50px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: background .25s, transform .2s;
+    }
+    .btn-primary:hover { background: #444; transform: translateY(-1px); }
+    .scroll-hint {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 5%;
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      font-size: .75rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--text-soft);
+      z-index: 1;
+    }
+    .scroll-line {
+      width: 40px; height: 1px; background: var(--text-soft);
+    }
+
+    /* ─── ABOUT ─── */
+    #about {
+      padding: 7rem 5%;
+    }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .about-text h2 {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 3.5vw, 2.9rem);
+      font-weight: 400;
+      line-height: 1.2;
+      margin-bottom: 1.6rem;
+    }
+    .about-text p {
+      color: var(--text-soft);
+      margin-bottom: 1.2rem;
+      font-size: 1rem;
+    }
+    .about-text p strong { color: var(--text); font-weight: 500; }
+    .about-divider {
+      width: 48px; height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      margin: 1.6rem 0;
+    }
+    /* SVG illustration */
+    .about-visual {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .about-visual svg {
+      width: 100%;
+      max-width: 340px;
+    }
+
+    /* ─── PILLARS ─── */
+    #pillars {
+      padding: 5rem 5% 7rem;
+      background: rgba(138,158,133,.06);
+    }
+    .pillars-header {
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+    .pillars-header h2 {
+      font-family: var(--serif);
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 400;
+    }
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 1.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .pillar-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2.5rem 2rem;
+      transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+    }
+    .pillar-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 16px 40px rgba(44,44,44,.08);
+      border-color: var(--accent);
+    }
+    .pillar-icon {
+      width: 48px; height: 48px;
+      background: rgba(138,158,133,.15);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.5rem;
+      font-size: 1.2rem;
+      color: var(--accent);
+    }
+    .pillar-card h3 {
+      font-family: var(--serif);
+      font-size: 1.4rem;
+      font-weight: 500;
+      margin-bottom: .7rem;
+    }
+    .pillar-card p {
+      font-size: .93rem;
+      color: var(--text-soft);
+      line-height: 1.65;
+    }
+
+    /* ─── SESSIONS ─── */
+    #sessions {
+      padding: 7rem 5%;
+    }
+    .sessions-header {
+      max-width: 1100px;
+      margin: 0 auto 3rem;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+    .sessions-header h2 {
+      font-family: var(--serif);
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 400;
+    }
+    .sessions-grid {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 1.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .session-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: .8rem;
+      transition: border-color .25s;
+    }
+    .session-card:hover { border-color: var(--accent2); }
+    .session-tag {
+      display: inline-block;
+      font-size: .7rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: .25rem .75rem;
+      border-radius: 50px;
+      font-weight: 500;
+    }
+    .tag-online { background: rgba(138,158,133,.15); color: var(--accent); }
+    .tag-inperson { background: rgba(196,154,138,.15); color: var(--accent2); }
+    .session-card h3 {
+      font-family: var(--serif);
+      font-size: 1.25rem;
+      font-weight: 500;
+      line-height: 1.3;
+    }
+    .session-meta {
+      font-size: .82rem;
+      color: var(--text-soft);
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .session-meta i { font-size: .75rem; }
+    .session-desc {
+      font-size: .9rem;
+      color: var(--text-soft);
+      line-height: 1.6;
+      flex: 1;
+    }
+    .btn-outline {
+      display: inline-block;
+      border: 1px solid var(--text);
+      color: var(--text);
+      font-size: .78rem;
+      font-weight: 400;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: .6rem 1.4rem;
+      border-radius: 50px;
+      text-decoration: none;
+      transition: background .2s, color .2s;
+      align-self: flex-start;
+    }
+    .btn-outline:hover { background: var(--text); color: var(--bg); }
+
+    /* ─── STORIES ─── */
+    #stories {
+      padding: 5rem 5% 7rem;
+      background: rgba(196,154,138,.07);
+    }
+    .stories-header {
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+    .stories-header h2 {
+      font-family: var(--serif);
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 400;
+    }
+    .stories-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      max-width: 920px;
+      margin: 0 auto;
+    }
+    .story-card {
+      background: var(--bg);
+      border-radius: var(--radius);
+      padding: 2.5rem 2.2rem;
+      border-left: 3px solid var(--accent2);
+      position: relative;
+    }
+    .story-card:nth-child(2) { border-left-color: var(--accent); }
+    .quote-mark {
+      font-family: var(--serif);
+      font-size: 5rem;
+      line-height: .8;
+      color: rgba(196,154,138,.25);
+      position: absolute;
+      top: 1rem;
+      right: 1.5rem;
+    }
+    .story-card blockquote {
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      font-weight: 400;
+      font-style: italic;
+      line-height: 1.7;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+    }
+    .story-author {
+      font-size: .8rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--text-soft);
+    }
+
+    /* ─── JOIN US ─── */
+    #join {
+      padding: 7rem 5%;
+    }
+    .join-inner {
+      max-width: 620px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .join-inner h2 {
+      font-family: var(--serif);
+      font-size: clamp(1.9rem, 3.5vw, 3rem);
+      font-weight: 400;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+    .join-inner > p {
+      color: var(--text-soft);
+      margin-bottom: 3rem;
+      font-size: .98rem;
+    }
+    .join-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.1rem;
+      text-align: left;
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; }
+    .form-group { display: flex; flex-direction: column; gap: .4rem; }
+    .form-group label {
+      font-size: .75rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--text-soft);
+      font-weight: 400;
+    }
+    .form-group input,
+    .form-group select {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: .85rem 1rem;
+      font-family: var(--sans);
+      font-size: .95rem;
+      font-weight: 300;
+      color: var(--text);
+      outline: none;
+      transition: border-color .2s;
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+    }
+    .form-group input:focus,
+    .form-group select:focus { border-color: var(--accent); }
+    .form-group input::placeholder { color: rgba(44,44,44,.3); }
+    .select-wrap { position: relative; }
+    .select-wrap::after {
+      content: '↓';
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-soft);
+      pointer-events: none;
+      font-size: .8rem;
+    }
+    .form-submit {
+      margin-top: .5rem;
+      text-align: center;
+    }
+    .btn-submit {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      font-family: var(--sans);
+      font-size: .85rem;
+      font-weight: 400;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: .95rem 2.8rem;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: background .25s, transform .2s;
+    }
+    .btn-submit:hover { background: #7a8e75; transform: translateY(-1px); }
+    .form-note {
+      font-size: .8rem;
+      color: var(--text-soft);
+      text-align: center;
+      margin-top: .8rem;
+    }
+    .form-success {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+    }
+    .form-success p {
+      font-family: var(--serif);
+      font-size: 1.4rem;
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 3.5rem 5% 2.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    .footer-logo {
+      font-family: var(--serif);
+      font-size: 1.5rem;
+      font-weight: 400;
+      color: var(--text);
+    }
+    .footer-logo span { color: var(--accent); }
+    .footer-tagline {
+      font-size: .9rem;
+      color: var(--text-soft);
+      letter-spacing: .04em;
+    }
+    .footer-socials {
+      display: flex;
+      gap: 1.4rem;
+    }
+    .footer-socials a {
+      width: 38px; height: 38px;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-soft);
+      font-size: .9rem;
+      text-decoration: none;
+      transition: border-color .2s, color .2s;
+    }
+    .footer-socials a:hover { border-color: var(--accent); color: var(--accent); }
+    .footer-copy {
+      font-size: .75rem;
+      letter-spacing: .06em;
+      color: rgba(44,44,44,.35);
+    }
+
+    /* ─── FADE-IN ANIMATIONS ─── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .75s ease, transform .75s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: none;
+    }
+    .fade-in-delay-1 { transition-delay: .1s; }
+    .fade-in-delay-2 { transition-delay: .22s; }
+    .fade-in-delay-3 { transition-delay: .34s; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .about-visual { display: none; }
+      .pillars-grid { grid-template-columns: 1fr; max-width: 480px; }
+      .sessions-grid { grid-template-columns: 1fr; max-width: 480px; }
+      .sessions-header { flex-direction: column; gap: 1rem; align-items: flex-start; }
+      .stories-grid { grid-template-columns: 1fr; max-width: 480px; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      nav { display: none; }
+      .hamburger { display: flex; }
+      .hero-shape { display: none; }
+      .hero-content h1 { font-size: 2.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ NAVBAR ═══ -->
+<header id="navbar">
+  <a href="#hero" class="nav-logo">Kashmir<span> Heals</span></a>
+  <nav>
+    <a href="#about">About</a>
+    <a href="#sessions">Sessions</a>
+    <a href="#stories">Stories</a>
+    <a href="#join" class="nav-cta">Join Us</a>
+  </nav>
+  <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-menu-close" id="menuClose" aria-label="Close menu">✕</button>
+  <a href="#about" class="mm-link">About</a>
+  <a href="#sessions" class="mm-link">Sessions</a>
+  <a href="#stories" class="mm-link">Stories</a>
+  <a href="#join" class="mm-link">Join Us</a>
+</div>
+
+<!-- ═══ HERO ═══ -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-shape"></div>
+  <div class="hero-content fade-in">
+    <span class="section-label">A community rooted in Kashmir</span>
+    <h1>Healing starts with<br><em>a conversation.</em></h1>
+    <p>Kashmir Heals is a warm, open space where people come together to talk, listen, create, and find solidarity — because no one should carry their weight alone.</p>
+    <a href="#join" class="btn-primary">Be Part of It</a>
+  </div>
+  <div class="scroll-hint">
+    <span class="scroll-line"></span>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- ═══ ABOUT ═══ -->
+<section id="about">
+  <div class="about-grid">
+    <div class="about-text fade-in">
+      <span class="section-label">Who we are</span>
+      <h2>Born from resilience.<br>Built on empathy.</h2>
+      <div class="about-divider"></div>
+      <p>Kashmir Heals began with a simple belief: <strong>that healing is not a private struggle.</strong> It is a shared journey. Inspired by the extraordinary resilience of the Kashmiri people — who have held beauty and pain in the same breath for generations — we created a space where conversations about mental health, identity, and belonging can happen freely.</p>
+      <p>We are not a clinic or a helpline. We are a <strong>community</strong> — of listeners, creators, survivors, and supporters. We believe that art, honest dialogue, and human warmth are among the most powerful medicines there are.</p>
+      <p>Whether you come carrying something heavy, or simply want to be present for others — you are welcome here.</p>
+    </div>
+    <div class="about-visual fade-in fade-in-delay-2">
+      <!-- Abstract Kashmiri-inspired SVG illustration -->
+      <svg viewBox="0 0 340 380" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Outer circle -->
+        <circle cx="170" cy="190" r="150" stroke="#8A9E85" stroke-width="1" stroke-dasharray="4 6" opacity=".4"/>
+        <!-- Middle circle -->
+        <circle cx="170" cy="190" r="110" stroke="#C49A8A" stroke-width="1" opacity=".3"/>
+        <!-- Chinar leaf stylized -->
+        <path d="M170 90 C178 130 220 145 220 190 C220 235 178 250 170 290 C162 250 120 235 120 190 C120 145 162 130 170 90Z" fill="#8A9E85" opacity=".12"/>
+        <path d="M170 90 C195 105 230 96 242 135 C254 175 224 205 208 228 C192 252 180 246 170 290 C178 250 215 235 215 195 C215 155 190 130 170 90Z" fill="#8A9E85" opacity=".1"/>
+        <path d="M170 90 C145 105 110 96 98 135 C86 175 116 205 132 228 C148 252 160 246 170 290 C162 250 125 235 125 195 C125 155 150 130 170 90Z" fill="#8A9E85" opacity=".1"/>
+        <!-- Stem -->
+        <line x1="170" y1="292" x2="170" y2="340" stroke="#8A9E85" stroke-width="2" opacity=".3"/>
+        <!-- Small dot -->
+        <circle cx="170" cy="298" r="4" fill="#C49A8A" opacity=".5"/>
+        <!-- Inner decorative dots -->
+        <circle cx="170" cy="190" r="5" fill="#8A9E85" opacity=".5"/>
+        <circle cx="148" cy="168" r="3" fill="#C49A8A" opacity=".4"/>
+        <circle cx="192" cy="168" r="3" fill="#C49A8A" opacity=".4"/>
+        <circle cx="148" cy="212" r="3" fill="#8A9E85" opacity=".3"/>
+        <circle cx="192" cy="212" r="3" fill="#8A9E85" opacity=".3"/>
+        <!-- Paisley curve accent -->
+        <path d="M200 155 C225 170 230 200 210 220 C195 235 175 230 165 215" stroke="#C49A8A" stroke-width="1.5" opacity=".4" fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PILLARS ═══ -->
+<section id="pillars">
+  <div class="pillars-header fade-in">
+    <span class="section-label">What we do</span>
+    <h2>Three pillars. One intention.</h2>
+  </div>
+  <div class="pillars-grid">
+    <div class="pillar-card fade-in fade-in-delay-1">
+      <div class="pillar-icon">
+        <i class="fa-regular fa-comments"></i>
+      </div>
+      <h3>Conversations</h3>
+      <p>We hold regular facilitated circles where people can speak openly about what they carry — grief, anxiety, identity, loss, hope. No judgment. No agenda. Just listening.</p>
+    </div>
+    <div class="pillar-card fade-in fade-in-delay-2">
+      <div class="pillar-icon" style="background: rgba(196,154,138,.15); color: var(--accent2);">
+        <i class="fa-regular fa-palette"></i>
+      </div>
+      <h3>Art & Expression</h3>
+      <p>Sometimes words aren't enough. Through writing, music, visual art, and storytelling, we offer pathways to process and express what lives deep inside us.</p>
+    </div>
+    <div class="pillar-card fade-in fade-in-delay-3">
+      <div class="pillar-icon">
+        <i class="fa-regular fa-heart"></i>
+      </div>
+      <h3>Community</h3>
+      <p>Healing doesn't happen in isolation. We build lasting bonds — between strangers who become companions, between those who have healed and those still on their way.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SESSIONS ═══ -->
+<section id="sessions">
+  <div class="sessions-header fade-in">
+    <div>
+      <span class="section-label">Upcoming</span>
+      <h2>Sessions & Gatherings</h2>
+    </div>
+  </div>
+  <div class="sessions-grid">
+    <div class="session-card fade-in fade-in-delay-1">
+      <span class="session-tag tag-online">Online</span>
+      <h3>Opening Circle: What Are You Holding?</h3>
+      <div class="session-meta">
+        <i class="fa-regular fa-calendar"></i> June 7, 2025 &nbsp;·&nbsp;
+        <i class="fa-regular fa-clock"></i> 7:00 PM IST
+      </div>
+      <p class="session-desc">A gentle introductory gathering for newcomers and returning members alike. We sit together, check in, and simply share — no pressure, no performance.</p>
+      <a href="javascript:void(0)" class="btn-outline">Know More</a>
+    </div>
+    <div class="session-card fade-in fade-in-delay-2">
+      <span class="session-tag tag-inperson">In-Person · Srinagar</span>
+      <h3>Writing as Witness: A Healing Workshop</h3>
+      <div class="session-meta">
+        <i class="fa-regular fa-calendar"></i> June 15, 2025 &nbsp;·&nbsp;
+        <i class="fa-regular fa-clock"></i> 4:30 PM IST
+      </div>
+      <p class="session-desc">A facilitated writing session exploring how the act of putting words to experience can release what has long felt stuck. Notebooks and tea provided.</p>
+      <a href="javascript:void(0)" class="btn-outline">Know More</a>
+    </div>
+    <div class="session-card fade-in fade-in-delay-3">
+      <span class="session-tag tag-online">Online</span>
+      <h3>Grief, Memory & the Art of Continuing</h3>
+      <div class="session-meta">
+        <i class="fa-regular fa-calendar"></i> June 22, 2025 &nbsp;·&nbsp;
+        <i class="fa-regular fa-clock"></i> 6:00 PM IST
+      </div>
+      <p class="session-desc">A contemplative session for those navigating loss in its many forms — a loved one, a home, a version of yourself. Open to all, always confidential.</p>
+      <a href="javascript:void(0)" class="btn-outline">Know More</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ STORIES ═══ -->
+<section id="stories">
+  <div class="stories-header fade-in">
+    <span class="section-label">Voices</span>
+    <h2>Words from the community</h2>
+  </div>
+  <div class="stories-grid">
+    <div class="story-card fade-in fade-in-delay-1">
+      <span class="quote-mark">"</span>
+      <blockquote>I came to my first session not knowing what to expect. I left feeling like I had been heard for the first time in years. There is something sacred about being in a room — even a virtual one — where no one is trying to fix you. They just stay with you.</blockquote>
+      <p class="story-author">— Community member, Srinagar</p>
+    </div>
+    <div class="story-card fade-in fade-in-delay-2">
+      <span class="quote-mark" style="color: rgba(138,158,133,.25);">"</span>
+      <blockquote>Writing for Kashmir Heals gave me permission to say out loud what I had only ever whispered to myself. The grief I carried about home, about things I cannot name — somehow, the page held it. And so did the people here.</blockquote>
+      <p class="story-author">— Participant, Writing Circle</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ JOIN US ═══ -->
+<section id="join">
+  <div class="join-inner">
+    <div class="fade-in">
+      <span class="section-label">Connect</span>
+      <h2>Want to be part of Kashmir Heals?</h2>
+      <p>Whether you're here to attend a session, share your story, lend your skills, or simply stay close — there's a place for you in this community.</p>
+    </div>
+    <form class="join-form fade-in fade-in-delay-1" id="joinForm" novalidate>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="name">Your Name</label>
+          <input type="text" id="name" name="name" placeholder="What shall we call you?" required />
+        </div>
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" placeholder="your@email.com" required />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="intention">I want to</label>
+        <div class="select-wrap">
+          <select id="intention" name="intention" required>
+            <option value="" disabled selected>Choose your intention</option>
+            <option value="attend">Attend a session</option>
+            <option value="story">Share my story</option>
+            <option value="volunteer">Volunteer with the community</option>
+            <option value="updates">Just stay updated</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-submit">
+        <button type="submit" class="btn-submit">Send My Intention</button>
+        <p class="form-note">We'll be in touch gently. No spam, ever.</p>
+      </div>
+    </form>
+    <div class="form-success" id="formSuccess">
+      <p>Thank you for reaching out. We'll be in touch soon. 🌿</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="footer-logo">Kashmir<span> Heals</span></div>
+  <p class="footer-tagline">A community. A conversation. A beginning.</p>
+  <div class="footer-socials">
+    <a href="https://www.instagram.com/kashmirheals" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+    <a href="https://x.com/KashmirHeals" target="_blank" rel="noopener" aria-label="X / Twitter"><i class="fab fa-x-twitter"></i></a>
+  </div>
+  <p class="footer-copy">&copy; 2025 Kashmir Heals. Made with care in Kashmir.</p>
+</footer>
+
+<script>
+  // ── Navbar scroll effect
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // ── Mobile menu
+  const hamburger = document.getElementById('hamburgerBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const menuClose  = document.getElementById('menuClose');
+  hamburger.addEventListener('click', () => mobileMenu.classList.add('open'));
+  menuClose.addEventListener('click', () => mobileMenu.classList.remove('open'));
+  document.querySelectorAll('.mm-link').forEach(l => {
+    l.addEventListener('click', () => mobileMenu.classList.remove('open'));
+  });
+
+  // ── Fade-in on scroll (IntersectionObserver)
+  const faders = document.querySelectorAll('.fade-in');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  faders.forEach(f => io.observe(f));
+
+  // ── Form submission (frontend only)
+  document.getElementById('joinForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const name      = document.getElementById('name').value.trim();
+    const email     = document.getElementById('email').value.trim();
+    const intention = document.getElementById('intention').value;
+    if (!name || !email || !intention) {
+      alert('Please fill in all fields before submitting.');
+      return;
+    }
+    const emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRx.test(email)) {
+      alert('Please enter a valid email address.');
+      return;
+    }
+    const btn = this.querySelector('.btn-submit');
+    btn.textContent = 'Sending…';
+    btn.disabled = true;
+    try {
+      const res = await fetch('https://formspree.io/f/maqkygng', {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: new FormData(this)
+      });
+      if (res.ok) {
+        this.style.display = 'none';
+        document.getElementById('formSuccess').style.display = 'block';
+      } else {
+        alert('Something went wrong. Please try again.');
+        btn.textContent = 'Send My Intention';
+        btn.disabled = false;
+      }
+    } catch(err) {
+      alert('Network error. Please try again.');
+      btn.textContent = 'Send My Intention';
+      btn.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>
